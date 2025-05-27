@@ -9,11 +9,11 @@ use Doctrine\ORM\EntityManager;
 
 class Application
 {
-    private static Application $instance;
+    private static ?Application $instance = null;
     private Routes $routes;
     private Container $container;
 
-    public function __construct()
+    private function __construct()
     {
         self::$instance = $this;
         $this->container = Container::getInstance();
@@ -22,6 +22,9 @@ class Application
 
     public static function getInstance(): Application
     {
+        if(self::$instance === null){
+            self::$instance = new self();
+        }
         return self::$instance;
     }
 
@@ -34,7 +37,6 @@ class Application
         $this->loadEnvironment();
 
         $this->registerEntityManager();
-        
 
         // Initialize routes
         $this->routes = new Routes();
@@ -44,7 +46,6 @@ class Application
     {
         $dotenv = \Dotenv\Dotenv::createImmutable(dirname(__DIR__, 2));
         $dotenv->load();
-
     }
 
     private function registerEntityManager(): void
@@ -71,13 +72,13 @@ class Application
         }
     }
 
-    public function run(): void
-    {
-        $this->routes->dispatch();
-    }
-
     public function getContainer(): Container
     {
         return $this->container;
+    }
+
+    public function run(): void
+    {
+        $this->routes->dispatch();
     }
 } 

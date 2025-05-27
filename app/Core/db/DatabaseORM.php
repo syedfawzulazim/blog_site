@@ -36,11 +36,11 @@ class DatabaseORM
                 );
 
                 $dbParams = [
-                    'dbname'   => $this->dbname,
-                    'user'     => $this->user,
+                    'dbname' => $this->dbname,
+                    'user' => $this->user,
                     'password' => $this->password,
-                    'host'     => $this->host,
-                    'driver'   =>$this->driver,
+                    'host' => $this->host,
+                    'driver' => $this->driver,
                 ];
 
                 try {
@@ -54,9 +54,6 @@ class DatabaseORM
             } catch (InvalidPathException $e) {
                 ErrorHandler::getInstance()->handleError($e);
                 throw new \RuntimeException('Environment file (.env) not found or invalid.');
-            } catch (ORMException $e) {
-                ErrorHandler::getInstance()->handleError($e);
-                throw new \RuntimeException('Failed to initialize ORM configuration.');
             }
         }
 

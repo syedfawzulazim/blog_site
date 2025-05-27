@@ -20,7 +20,7 @@ class User
     #[ORM\Column(length: 255)]
     private string $password;
 
-    #[ORM\Column(type: 'datetime', name: 'created_at')]
+    #[ORM\Column(name: 'created_at', type: 'datetime')]
     private DateTime $created_at;
 
     public function __construct()

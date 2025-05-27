@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="/">Blog-Site</a>
         <div class="" id="navbar">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav flex-row me-auto mb-2 mb-lg-0  gap-5">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/">Home</a>
                 </li>

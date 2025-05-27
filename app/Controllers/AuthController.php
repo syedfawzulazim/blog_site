@@ -3,12 +3,15 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Core\Traits\RedirectTrait;
+use App\Core\Traits\ValidateMethodTrait;
 use App\core\View;
 use App\Models\User;
 use App\Models\Validators\InputValidator;
 
 class AuthController
 {
+    use RedirectTrait, ValidateMethodTrait;
     private User $user;
     private View $view;
 
@@ -19,15 +22,13 @@ class AuthController
     }
     public function showRegistrationForm(): string
     {
-        return View::render('register');
+        return $this->view->render('register');
     }
 
     public function register(): string
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
-            echo "Method is not allowed";
-            return '';
+        if ($error = $this->validateMethod('POST', 'register')) {
+            return $error;
         }
 
         $errors = InputValidator::validateRegistration($_POST);
@@ -58,11 +59,8 @@ class AuthController
 
     public function signin(): string
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
-            return  $this->view->render('signin', [
-                'errors' => ['Method not allowed']
-            ]);
+        if ($error = $this->validateMethod('POST', 'signin')) {
+            return $error;
         }
 
         $errors = InputValidator::validateLogin($_POST);

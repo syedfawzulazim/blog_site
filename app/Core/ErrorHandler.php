@@ -5,26 +5,7 @@ namespace App\Core;
 
 class ErrorHandler
 {
-    private static ?ErrorHandler $instance = null;
-
-    private function __construct()
-    {
-    }
-
-    public static function getInstance(): self
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-
-    public function handleError(\Throwable $e): void
-    {
-        $this->logError($e);
-    }
-
-    private function logError(\Throwable $e): void
+    public static function handleError(\Throwable $e): void
     {
         $message = sprintf(
             "Error: %s\nFile: %s\nLine: %d",
@@ -34,5 +15,4 @@ class ErrorHandler
         );
         error_log($message);
     }
-
 }

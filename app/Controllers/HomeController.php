@@ -31,7 +31,7 @@ class HomeController
                 'posts' => $posts
             ]);
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleError($e);
+            ErrorHandler::handleError($e);
             return $this->view->render('home', [
                 'errors' => ['An error occurred while fetching posts'],
                 'posts' => []

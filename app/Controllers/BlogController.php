@@ -33,7 +33,7 @@ class BlogController
     public function create(): string
     {
         try {
-            if ($error = $this->validateMethod('POST', 'blog/create', ['old' => $_POST])) {
+            if ($error = $this->validateMethod('POST', 'blog/create')) {
                 return $error;
             }
 
@@ -55,7 +55,7 @@ class BlogController
                 'old' => $_POST
             ]);
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleError($e);
+            ErrorHandler::handleError($e);
             return $this->view->render('blog/create', [
                 'errors' => ['An error occurred while creating the post'],
                 'old' => $_POST
@@ -75,7 +75,7 @@ class BlogController
                 'post' => $post
             ]);
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleError($e);
+            ErrorHandler::handleError($e);
             $_SESSION['error'] = 'An error occurred while fetching the post';
             $this->redirect('/');
         }
@@ -84,7 +84,7 @@ class BlogController
     public function update(string $id): string
     {
         try {
-            if ($error = $this->validateMethod('POST', 'blog/update')) {
+            if ($error = $this->validateMethod('POST', 'blog/edit')) {
                 return $error;
             }
 
@@ -111,7 +111,7 @@ class BlogController
                 'post' => $post
             ]);
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleError($e);
+            ErrorHandler::handleError($e);
             return $this->view->render('blog/edit', [
                 'errors' => ['An error occurred while updating the post'],
                 'post' => $post ?? null
@@ -132,7 +132,7 @@ class BlogController
             
             $this->redirect('/');
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleError($e);
+            ErrorHandler::handleError($e);
             $_SESSION['error'] = 'An error occurred while deleting the post';
             $this->redirect('/');
         }
