@@ -1,0 +1,16 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+/vendor/
+.idea/
+
+# ignore lock file since we have no extra dependencies
+composer.lock
+
+.env
