@@ -1,35 +1,26 @@
 <?php
 declare(strict_types=1);
 
-namespace App\core;
+namespace App\core\db;
 
-use Dotenv\Dotenv;
 use PDO;
 use PDOException;
 
-class Database{
-    private static ?Database $instance = null;
+class DatabasePDO{
+    private static ?DatabasePDO $instance = null;
     private PDO $connection;
 
     public function __construct()
     {
-        $this->loadEnv();
         $this->connect();
     }
 
-    public static function getInstance(): Database
+    public static function getInstance(): DatabasePDO
     {
         if(self::$instance === null){
             self::$instance = new self();
         }
         return self::$instance;
-    }
-
-    private function loadEnv(): void
-    {
-        $root = dirname(__DIR__,2);
-        $dotenv = Dotenv::createImmutable($root);
-        $dotenv->load();
     }
 
     private function connect(): void
@@ -43,9 +34,9 @@ class Database{
             $dsn = "mysql:host={$host};dbname={$dbname}";
             $this->connection = new PDO($dsn, $username, $password);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "Database Connection Successful";
+            echo "DatabasePDO Connection Successful <br>";
         } catch (PDOException $e){
-            die("Database connection failed : " .$e->getMessage());
+            die("DatabasePDO connection failed : " .$e->getMessage());
         }
     }
 

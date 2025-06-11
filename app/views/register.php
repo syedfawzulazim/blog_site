@@ -2,7 +2,7 @@
 
 <div class="col-4 offset-4 border p-5 mt-5">
     <div class="text-center">
-        <h2>Login</h2>
+        <h2>Register</h2>
     </div>
     <form method="POST">
         <div class="mb-3">
@@ -19,18 +19,18 @@
         </div>
         <div class="mb-3 d-flex justify-content-around">
             <button type="submit" class="btn btn-outline-primary">Register</button>
-            <button type="button" class="btn btn-outline-success">SignIn</button>
+            <a href="/signin" class="btn btn-outline-success">Sign In</a>
         </div>
     </form>
 
 
-    <?php
-        echo $_SERVER["REQUEST_METHOD"];
-        echo("<pre>");
-        if($_POST["name"]){
-            print_r($_POST);
-        };
-    ?>
+<!--    --><?php
+//        echo $_SERVER["REQUEST_METHOD"];
+//        echo("<pre>");
+//        if($_POST["name"]){
+//            print_r($_POST);
+//        };
+//    ?>
 
 
 </div>
