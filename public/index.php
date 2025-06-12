@@ -6,6 +6,7 @@ session_start();
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../app/core/init.php';
 
+use App\core\db\DatabaseORM;
 use App\core\db\DatabasePDO as Database;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
@@ -25,19 +26,6 @@ use Doctrine\ORM\ORMSetup;
 
 
 //ORM-Database
-//$config = ORMSetup::createAttributeMetadataConfiguration(
-//    paths: [__DIR__ . '/../app/core/db/entity'],
-//    isDevMode: true,
-//);
-//
-//$dbParams = [
-//    'dbname'   => $_ENV['DB_NAME'],
-//    'user'     => $_ENV['DB_USER'],
-//    'password' => $_ENV['DB_PASS'],
-//    'host'     => $_ENV['DB_HOST'],
-//    'driver'   =>  $_ENV['DB_DRIVER'] ?? 'pdo_mysql',
-//];
-//
-//$connection = DriverManager::getConnection($dbParams, $config);
-//
-//$entityManager = new EntityManager($connection, $config);
+//$entityManager = DatabaseORM::create();
+//echo 'index';
+//echo $entityManager->isOpen();

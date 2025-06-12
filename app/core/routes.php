@@ -11,8 +11,8 @@ use App\controllers\AuthController;
 $router = new RouteCollector();
 
 //define route
-$router->get('/', [HomeController::class, 'index']);
-$router->get('/register', [AuthController::class, 'registrationView']);
+$router->get('/', [HomeController::class, 'showHomePage']);
+$router->get('/register', [AuthController::class, 'showRegistrationFrom']);
 $router->post('/register', [AuthController::class, 'register']);
 $router->get('/signin', [AuthController::class, 'signin']);
 $router->get('/about', [HomeController::class, 'about']);

@@ -24,13 +24,13 @@
     </form>
 
 
-<!--    --><?php
-//        echo $_SERVER["REQUEST_METHOD"];
-//        echo("<pre>");
-//        if($_POST["name"]){
-//            print_r($_POST);
-//        };
-//    ?>
+    <?php
+        echo $_SERVER["REQUEST_METHOD"];
+        echo("<pre>");
+        if($_POST["name"]){
+            print_r($_POST);
+        };
+    ?>
 
 
 </div>
