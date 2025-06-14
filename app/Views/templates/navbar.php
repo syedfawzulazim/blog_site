@@ -7,7 +7,12 @@
                     <a class="nav-link active" aria-current="page" href="/">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/signin">Sign In</a>
+                    <?php if (isset($_SESSION['user_name'])): ?>
+                        <a class="nav-link" href="/logout">Logout</a>
+                    <?php else: ?>
+                        <a class="nav-link" href="/signin">Sign In</a>
+                    <?php endif; ?>
+
                 </li>
             </ul>
         </div>

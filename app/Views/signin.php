@@ -1,5 +1,15 @@
 <?php include('templates/header.php'); ?>
 
+<?php if (!empty($errors)): ?>
+    <div class="alert alert-danger">
+        <ul>
+            <?php foreach ($errors as $field => $message): ?>
+                <li><?= htmlspecialchars($message) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>
+
 <?php if (isset($_SESSION['success'])): ?>
     <div class="alert alert-success">
         <ul>

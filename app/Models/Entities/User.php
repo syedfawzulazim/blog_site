@@ -62,4 +62,9 @@ class User
     {
         return $this->created_at;
     }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
 }

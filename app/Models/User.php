@@ -37,6 +37,20 @@ class User
         }
     }
 
+    public function login(string $email, string $password): ?UserEntity
+    {
+        try {
+            $user = $this->findByEmail($email);
+            if ($user && password_verify($password, $user->getPassword())) {
+                return $user;
+            }
+            return null;
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
+
     public function findByEmail(string $email): ?UserEntity
     {
         return $this->entityManager->getRepository(UserEntity::class)
@@ -46,48 +60,5 @@ class User
     public function findById(int $id): ?UserEntity
     {
         return $this->entityManager->find(UserEntity::class, $id);
-    }
-
-    public function update(int $id, array $data): bool
-    {
-        try {
-            $user = $this->findById($id);
-            if (!$user) {
-                return false;
-            }
-
-            if (isset($data['name'])) {
-                $user->setName($data['name']);
-            }
-            if (isset($data['email'])) {
-                $user->setEmail($data['email']);
-            }
-            if (isset($data['password'])) {
-                $user->setPassword(password_hash($data['password'], PASSWORD_DEFAULT));
-            }
-
-            $this->entityManager->flush();
-            return true;
-        } catch (\Exception $e) {
-            error_log($e->getMessage());
-            return false;
-        }
-    }
-
-    public function delete(int $id): bool
-    {
-        try {
-            $user = $this->findById($id);
-            if (!$user) {
-                return false;
-            }
-
-            $this->entityManager->remove($user);
-            $this->entityManager->flush();
-            return true;
-        } catch (\Exception $e) {
-            error_log($e->getMessage());
-            return false;
-        }
     }
 } 
