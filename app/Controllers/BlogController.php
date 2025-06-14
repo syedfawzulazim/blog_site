@@ -1,0 +1,189 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Controllers;
+
+use App\Core\ErrorHandler;
+use App\Core\View;
+use App\Models\BlogPost;
+use App\Models\Validators\InputValidator;
+
+class BlogController
+{
+    private BlogPost $blogPost;
+
+    public function __construct()
+    {
+        $this->blogPost = new BlogPost();
+    }
+
+    public function showCreateForm(): string
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /signin');
+            exit;
+        }
+        return View::render('blog/create');
+    }
+
+    public function create(): string
+    {
+        try {
+            if (!isset($_SESSION['user_id'])) {
+                header('Location: /signin');
+                exit;
+            }
+
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                http_response_code(405);
+                return View::render('blog/create', [
+                    'errors' => ['Method not allowed']
+                ]);
+            }
+
+            $errors = $this->validatePost($_POST);
+            if (!empty($errors)) {
+                return View::render('blog/create', [
+                    'errors' => $errors,
+                    'old' => $_POST
+                ]);
+            }
+
+            if ($this->blogPost->create($_POST, $_SESSION['user_id'])) {
+                $_SESSION['success'] = 'Blog post created successfully!';
+                header('Location: /');
+                exit;
+            }
+
+            return View::render('blog/create', [
+                'errors' => ['Failed to create blog post'],
+                'old' => $_POST
+            ]);
+        } catch (\Throwable $e) {
+            ErrorHandler::getInstance()->handleError($e);
+            return View::render('blog/create', [
+                'errors' => ['An error occurred while creating the post'],
+                'old' => $_POST
+            ]);
+        }
+    }
+
+    public function edit(int $id): string
+    {
+        try {
+            if (!isset($_SESSION['user_id'])) {
+                header('Location: /signin');
+                exit;
+            }
+
+            $post = $this->blogPost->getPostById($id);
+            if (!$post || $post['user_id'] !== $_SESSION['user_id']) {
+                header('Location: /');
+                exit;
+            }
+
+            return View::render('blog/edit', [
+                'post' => $post
+            ]);
+        } catch (\Throwable $e) {
+            ErrorHandler::getInstance()->handleError($e);
+            header('Location: /');
+            exit;
+        }
+    }
+
+    public function update(int $id): string
+    {
+        try {
+            if (!isset($_SESSION['user_id'])) {
+                header('Location: /signin');
+                exit;
+            }
+
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                http_response_code(405);
+                return View::render('blog/edit', [
+                    'errors' => ['Method not allowed']
+                ]);
+            }
+
+            $post = $this->blogPost->getPostById($id);
+            if (!$post || $post['user_id'] !== $_SESSION['user_id']) {
+                header('Location: /');
+                exit;
+            }
+
+            $errors = $this->validatePost($_POST);
+            if (!empty($errors)) {
+                return View::render('blog/edit', [
+                    'errors' => $errors,
+                    'post' => $post
+                ]);
+            }
+
+            if ($this->blogPost->update($id, $_POST)) {
+                $_SESSION['success'] = 'Blog post updated successfully!';
+                header('Location: /');
+                exit;
+            }
+
+            return View::render('blog/edit', [
+                'errors' => ['Failed to update blog post'],
+                'post' => $post
+            ]);
+        } catch (\Throwable $e) {
+            ErrorHandler::getInstance()->handleError($e);
+            return View::render('blog/edit', [
+                'errors' => ['An error occurred while updating the post'],
+                'post' => $post ?? null
+            ]);
+        }
+    }
+
+    public function delete(int $id): void
+    {
+        try {
+            if (!isset($_SESSION['user_id'])) {
+                header('Location: /signin');
+                exit;
+            }
+
+            $post = $this->blogPost->getPostById($id);
+            if (!$post || $post['user_id'] !== $_SESSION['user_id']) {
+                header('Location: /');
+                exit;
+            }
+
+            if ($this->blogPost->delete($id)) {
+                $_SESSION['success'] = 'Blog post deleted successfully!';
+            } else {
+                $_SESSION['error'] = 'Failed to delete blog post';
+            }
+        } catch (\Throwable $e) {
+            ErrorHandler::getInstance()->handleError($e);
+            $_SESSION['error'] = 'An error occurred while deleting the post';
+        }
+
+        header('Location: /');
+        exit;
+    }
+
+    private function validatePost(array $data): array
+    {
+        $errors = [];
+
+        if (empty($data['title'])) {
+            $errors['title'] = 'Title is required';
+        } elseif (strlen($data['title']) > 255) {
+            $errors['title'] = 'Title must be less than 255 characters';
+        }
+
+        if (empty($data['content'])) {
+            $errors['content'] = 'Content is required';
+        }  elseif (strlen($data['content']) < 5) {
+            $errors['content'] = 'content must be more than 5 characters';
+        }
+
+        return $errors;
+    }
+} 

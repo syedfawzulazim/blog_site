@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Core;
 
+use App\Controllers\BlogController;
 use Phroute\Phroute\RouteCollector;
 use Phroute\Phroute\Dispatcher;
 use Phroute\Phroute\Exception\HttpRouteNotFoundException;
@@ -35,6 +36,8 @@ class Routes
         $this->router->get('/logout', [AuthController::class, 'logout']);
         
         // Protected routes
+        $this->router->get('/blog/create', [BlogController::class, 'showCreateForm']);
+        $this->router->post('/blog/create', [BlogController::class, 'create']);
     }
 
     public function dispatch(): void

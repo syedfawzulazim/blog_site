@@ -1,16 +1,6 @@
 <?php include('templates/header.php'); ?>
 
-<?php if (!empty($errors)): ?>
-    <div class="alert alert-danger">
-        <ul>
-            <?php foreach ($errors as $field => $message): ?>
-                <li><?= htmlspecialchars($message) ?></li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-<?php endif; ?>
-
-<div class="col-4 offset-4 border p-5 mt-5">
+    <div class="col-4 offset-4 border p-5 mt-5">
     <div class="text-center">
         <h2>Register</h2>
     </div>
