@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Core\Db\DatabaseORM;
+use App\Core\ErrorHandler;
 use App\Models\Entities\User as UserEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Exception\ORMException;
@@ -28,11 +29,8 @@ class User
             $this->entityManager->persist($user);
             $this->entityManager->flush();
             return true;
-        } catch (\Exception $e) {
-            error_log($e->getMessage());
-            return false;
-        } catch (ORMException $e) {
-            error_log($e->getMessage());
+        } catch (\Throwable $e) {
+            ErrorHandler::getInstance()->handleError($e);
             return false;
         }
     }
@@ -45,20 +43,30 @@ class User
                 return $user;
             }
             return null;
-        } catch (\Exception $e) {
-            error_log($e->getMessage());
+        } catch (\Throwable $e) {
+            ErrorHandler::getInstance()->handleError($e);
             return null;
         }
     }
 
     public function findByEmail(string $email): ?UserEntity
     {
-        return $this->entityManager->getRepository(UserEntity::class)
-            ->findOneBy(['email' => $email]);
+        try {
+            return $this->entityManager->getRepository(UserEntity::class)
+                ->findOneBy(['email' => $email]);
+        } catch (\Throwable $e) {
+            ErrorHandler::getInstance()->handleError($e);
+            return null;
+        }
     }
 
     public function findById(int $id): ?UserEntity
     {
-        return $this->entityManager->find(UserEntity::class, $id);
+        try {
+            return $this->entityManager->find(UserEntity::class, $id);
+        } catch (\Throwable $e) {
+            ErrorHandler::getInstance()->handleError($e);
+            return null;
+        }
     }
 } 

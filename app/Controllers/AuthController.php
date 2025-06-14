@@ -70,7 +70,7 @@ class AuthController
                 $_SESSION['user_id'] = $loggedInUser->getId();
                 $_SESSION['user_name'] = $loggedInUser->getName();
                 $_SESSION['user_email'] = $loggedInUser->getEmail();
-                
+
                 // Redirect to dashboard or home page
                 header('Location: /');
                 exit;
@@ -88,7 +88,21 @@ class AuthController
         ]);
     }
 
-    public function logout() {
+    public function logout(): void
+    {
+        // Unset all session variables
+        $_SESSION = array();
 
+        // Destroy the session cookie
+        if (isset($_COOKIE[session_name()])) {
+            setcookie(session_name(), '', time() - 3600, '/');
+        }
+
+        // Destroy the session
+        session_destroy();
+
+        // Redirect to home page
+        header('Location: /');
+        exit;
     }
 }
