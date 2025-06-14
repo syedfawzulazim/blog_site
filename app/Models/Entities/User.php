@@ -1,6 +1,7 @@
 <?php
 
-namespace App\core\db\entity;
+namespace App\Models\Entities;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -10,7 +11,7 @@ class User
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]
-    private int $id;
+    private int|null $id=null;
     #[ORM\Column(type: 'string', length: 150)]
     private string $name;
 
@@ -19,14 +20,12 @@ class User
     #[ORM\Column(length: 255)]
     private string $password;
 
-    #[ORM\Column(length: 2)]
-    private int $age;
     #[ORM\Column(type: 'datetime', name: 'created_at')]
     private DateTime $created_at;
 
     public function __construct()
     {
-        $this->created_at = new DateTime();
+        $this->created_at = new DateTime('now');
     }
 
     public function getId(): int
@@ -54,11 +53,6 @@ class User
         $this->email = $email;
     }
 
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
     public function setPassword(string $password): void
     {
         $this->password = $password;
@@ -68,11 +62,4 @@ class User
     {
         return $this->created_at;
     }
-
-    public function setCreatedAt(DateTime $created_at): void
-    {
-        $this->created_at = $created_at;
-    }
-
-
 }

@@ -1,5 +1,14 @@
 <?php include('templates/header.php'); ?>
 
+<?php if (isset($_SESSION['success'])): ?>
+    <div class="alert alert-success">
+        <ul>
+                <li><?= htmlspecialchars($_SESSION['success']) ?></li>
+                <?php unset($_SESSION['success']); ?>
+        </ul>
+    </div>
+<?php endif; ?>
+
     <div class="col-4 offset-4 border p-5 mt-5">
         <div class="text-center">
             <h2>Sign-In</h2>
@@ -18,17 +27,6 @@
                 <a href="/register" class="btn btn-outline-success">Register</a>
             </div>
         </form>
-
-
-        <!--    --><?php
-        //        echo $_SERVER["REQUEST_METHOD"];
-        //        echo("<pre>");
-        //        if($_POST["name"]){
-        //            print_r($_POST);
-        //        };
-        //    ?>
-
-
     </div>
 
 <?php include('templates/footer.php'); ?>

@@ -1,16 +1,14 @@
 <?php
 declare(strict_types=1);
 
-session_start();
-
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../app/core/init.php';
 
-use App\core\db\DatabaseORM;
-use App\core\db\DatabasePDO as Database;
-use Doctrine\DBAL\DriverManager;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\ORMSetup;
+use App\Core\Application;
+
+// Create and run the application
+$app = new Application();
+$app->run();
+
 
 //PDO-Database
 

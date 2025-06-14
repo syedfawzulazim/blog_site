@@ -1,5 +1,15 @@
 <?php include('templates/header.php'); ?>
 
+<?php if (!empty($errors)): ?>
+    <div class="alert alert-danger">
+        <ul>
+            <?php foreach ($errors as $field => $message): ?>
+                <li><?= htmlspecialchars($message) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>
+
 <div class="col-4 offset-4 border p-5 mt-5">
     <div class="text-center">
         <h2>Register</h2>
@@ -22,17 +32,6 @@
             <a href="/signin" class="btn btn-outline-success">Sign In</a>
         </div>
     </form>
-
-
-    <?php
-        echo $_SERVER["REQUEST_METHOD"];
-        echo("<pre>");
-        if($_POST["name"]){
-            print_r($_POST);
-        };
-    ?>
-
-
 </div>
 
 <?php include('templates/footer.php'); ?>

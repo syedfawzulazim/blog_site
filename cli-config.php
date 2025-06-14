@@ -8,6 +8,6 @@ use Doctrine\Migrations\Configuration\Migration\PhpFile;
 
 $config = new PhpFile('migrations.php');
 
-$entityManager = \App\core\db\DatabaseORM::create();
+$entityManager = \App\Core\Db\DatabaseORM::create();
 
 return DependencyFactory::fromEntityManager($config, new ExistingEntityManager($entityManager));

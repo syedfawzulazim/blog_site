@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\core\db;
+namespace App\Core\Db;
 
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
@@ -16,11 +16,11 @@ class DatabaseORM
     {
         if (self::$entityManager === null) {
             // load .env
-            $dotenv = Dotenv::createImmutable(__DIR__ . '/../../../');
+            $dotenv = Dotenv::createImmutable(dirname(__DIR__, 3));
             $dotenv->safeLoad();
 
             $config = ORMSetup::createAttributeMetadataConfiguration(
-                paths: [dirname(__DIR__, 3) . '/app/core/db/entity'],
+                paths: [dirname(__DIR__, 3) . '/app/Models/Entities'],
                 isDevMode: true
             );
 
