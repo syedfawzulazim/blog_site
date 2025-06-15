@@ -10,7 +10,7 @@ class AuthMiddleware
     public function handle(): void
     {
         if (!CommonHelper::isAuthenticated()) {
-            CommonHelper::redirect('/login');
+            CommonHelper::redirect('/signin');
         }
     }
 } 

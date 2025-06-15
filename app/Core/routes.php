@@ -25,8 +25,7 @@ class Routes
     private function registerRoutes(): void
     {
         // Public routes
-        $this->router->get('/', [HomeController::class, 'showHomePage']);
-        $this->router->get('/about', [HomeController::class, 'about']);
+        $this->router->get('/', [HomeController::class, 'index']);
         
         // Auth routes
         $this->router->get('/register', [AuthController::class, 'showRegistrationForm']);
@@ -36,8 +35,12 @@ class Routes
         $this->router->get('/logout', [AuthController::class, 'logout']);
         
         // Protected routes
-        $this->router->get('/blog/create', [BlogController::class, 'showCreateForm']);
+        $this->router->get('/blog/create', [BlogController::class, 'index']);
         $this->router->post('/blog/create', [BlogController::class, 'create']);
+        $this->router->get('/blog/edit/{id:\d+}', [BlogController::class, 'edit']);
+        $this->router->post('/blog/edit/{id:\d+}', [BlogController::class, 'update']);
+        $this->router->get('/blog/delete/{id:\d+}', [BlogController::class, 'delete']);
+
     }
 
     public function dispatch(): void

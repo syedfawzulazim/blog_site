@@ -47,7 +47,6 @@ class Application
     private function databaseConnection(): void
     {
         $entityManager = DatabaseORM::create();
-        echo "Database connection: {$entityManager->isOpen()}";
     }
 
     private function startSession(): void

@@ -21,7 +21,7 @@ class BlogPost
     public function create(array $data, int $userId): bool
     {
         try {
-            $user = $this->entityManager->find(UserEntity::class, $userId);
+            $user = $this->entityManager->getRepository(UserEntity::class)->find($userId);
             if (!$user) {
                 return false;
             }
@@ -40,16 +40,11 @@ class BlogPost
         }
     }
 
-    public function getAllPosts(): array
+    public function getAllPostsByUserId(int $userId): array
     {
         try {
             $posts = $this->entityManager->getRepository(BlogPostEntity::class)
-                ->createQueryBuilder('p')
-                ->select('p', 'u')
-                ->leftJoin('p.user', 'u')
-                ->orderBy('p.created_at', 'DESC')
-                ->getQuery()
-                ->getResult();
+                ->findBy(['user' => $userId], ['created_at' => 'DESC']);
 
             return array_map(function (BlogPostEntity $post) {
                 return [
@@ -70,7 +65,7 @@ class BlogPost
     public function getPostById(int $id): ?array
     {
         try {
-            $post = $this->entityManager->find(BlogPostEntity::class, $id);
+            $post = $this->entityManager->getRepository(BlogPostEntity::class)->find($id);
             if (!$post) {
                 return null;
             }
@@ -92,17 +87,13 @@ class BlogPost
     public function update(int $id, array $data): bool
     {
         try {
-            $post = $this->entityManager->find(BlogPostEntity::class, $id);
+            $post = $this->entityManager->getRepository(BlogPostEntity::class)->find($id);
             if (!$post) {
                 return false;
             }
 
-            if (isset($data['title'])) {
-                $post->setTitle($data['title']);
-            }
-            if (isset($data['content'])) {
-                $post->setContent($data['content']);
-            }
+            $post->setTitle($data['title']);
+            $post->setContent($data['content']);
 
             $this->entityManager->flush();
             return true;
@@ -112,12 +103,17 @@ class BlogPost
         }
     }
 
-    public function delete(int $id): bool
+    public function delete(int $id, int $userId): bool|string
     {
         try {
-            $post = $this->entityManager->find(BlogPostEntity::class, $id);
+            $post = $this->entityManager->getRepository(BlogPostEntity::class)->find($id);
+            
             if (!$post) {
-                return false;
+                return 'Post not found';
+            }
+
+            if ($post->getUser()->getId() !== $userId) {
+                return 'You are not authorized to delete this post';
             }
 
             $this->entityManager->remove($post);
@@ -125,7 +121,7 @@ class BlogPost
             return true;
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleError($e);
-            return false;
+            return 'An error occurred while deleting the post';
         }
     }
 } 

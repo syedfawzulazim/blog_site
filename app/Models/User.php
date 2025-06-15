@@ -15,7 +15,12 @@ class User
 
     public function __construct()
     {
-        $this->entityManager = DatabaseORM::create();
+        try {
+            $this->entityManager = DatabaseORM::create();
+        } catch (\Throwable $e) {
+            ErrorHandler::getInstance()->handleError($e);
+            throw $e;
+        }
     }
 
     public function create(array $data): bool

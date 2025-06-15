@@ -1,5 +1,4 @@
-<?php
-?>
+<?php ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -10,7 +9,4 @@
 </head>
 <body>
 
-<?php
-include('navbar.php');
-
-?>
+<?php require_once 'navbar.php'?>

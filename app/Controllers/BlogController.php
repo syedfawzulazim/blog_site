@@ -4,12 +4,16 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Core\ErrorHandler;
+use App\Core\Traits\RedirectTrait;
+use App\Core\Traits\ValidateMethodTrait;
 use App\Core\View;
 use App\Models\BlogPost;
 use App\Models\Validators\InputValidator;
 
 class BlogController
 {
+    use RedirectTrait, ValidateMethodTrait;
+
     private BlogPost $blogPost;
 
     public function __construct()
@@ -17,11 +21,10 @@ class BlogController
         $this->blogPost = new BlogPost();
     }
 
-    public function showCreateForm(): string
+    public function index(): string
     {
         if (!isset($_SESSION['user_id'])) {
-            header('Location: /signin');
-            exit;
+            $this->redirect('/signin');
         }
         return View::render('blog/create');
     }
@@ -30,15 +33,11 @@ class BlogController
     {
         try {
             if (!isset($_SESSION['user_id'])) {
-                header('Location: /signin');
-                exit;
+                $this->redirect('/signin');
             }
 
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                http_response_code(405);
-                return View::render('blog/create', [
-                    'errors' => ['Method not allowed']
-                ]);
+            if ($error = $this->validateMethod('POST', 'blog/create', ['old' => $_POST])) {
+                return $error;
             }
 
             $errors = $this->validatePost($_POST);
@@ -51,8 +50,7 @@ class BlogController
 
             if ($this->blogPost->create($_POST, $_SESSION['user_id'])) {
                 $_SESSION['success'] = 'Blog post created successfully!';
-                header('Location: /');
-                exit;
+                $this->redirect('/');
             }
 
             return View::render('blog/create', [
@@ -72,14 +70,12 @@ class BlogController
     {
         try {
             if (!isset($_SESSION['user_id'])) {
-                header('Location: /signin');
-                exit;
+                $this->redirect('/signin');
             }
 
             $post = $this->blogPost->getPostById($id);
             if (!$post || $post['user_id'] !== $_SESSION['user_id']) {
-                header('Location: /');
-                exit;
+                $this->redirect('/');
             }
 
             return View::render('blog/edit', [
@@ -87,8 +83,7 @@ class BlogController
             ]);
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleError($e);
-            header('Location: /');
-            exit;
+            $this->redirect('/');
         }
     }
 
@@ -96,21 +91,16 @@ class BlogController
     {
         try {
             if (!isset($_SESSION['user_id'])) {
-                header('Location: /signin');
-                exit;
+                $this->redirect('/signin');
             }
 
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                http_response_code(405);
-                return View::render('blog/edit', [
-                    'errors' => ['Method not allowed']
-                ]);
+            if ($error = $this->validateMethod('POST', 'blog/edit')) {
+                return $error;
             }
 
             $post = $this->blogPost->getPostById($id);
             if (!$post || $post['user_id'] !== $_SESSION['user_id']) {
-                header('Location: /');
-                exit;
+                $this->redirect('/');
             }
 
             $errors = $this->validatePost($_POST);
@@ -123,8 +113,7 @@ class BlogController
 
             if ($this->blogPost->update($id, $_POST)) {
                 $_SESSION['success'] = 'Blog post updated successfully!';
-                header('Location: /');
-                exit;
+                $this->redirect('/');
             }
 
             return View::render('blog/edit', [
@@ -140,32 +129,27 @@ class BlogController
         }
     }
 
-    public function delete(int $id): void
+    public function delete(int $id): string
     {
         try {
             if (!isset($_SESSION['user_id'])) {
-                header('Location: /signin');
-                exit;
+                $this->redirect('/signin');
             }
 
-            $post = $this->blogPost->getPostById($id);
-            if (!$post || $post['user_id'] !== $_SESSION['user_id']) {
-                header('Location: /');
-                exit;
-            }
-
-            if ($this->blogPost->delete($id)) {
+            $result = $this->blogPost->delete($id, $_SESSION['user_id']);
+            
+            if ($result === true) {
                 $_SESSION['success'] = 'Blog post deleted successfully!';
             } else {
-                $_SESSION['error'] = 'Failed to delete blog post';
+                $_SESSION['error'] = $result;
             }
+            
+            $this->redirect('/');
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleError($e);
             $_SESSION['error'] = 'An error occurred while deleting the post';
+            $this->redirect('/');
         }
-
-        header('Location: /');
-        exit;
     }
 
     private function validatePost(array $data): array
