@@ -11,9 +11,9 @@ class HomeController
 {
     private BlogPost $blogPost;
 
-    public function __construct()
+    public function __construct(BlogPost $blogPost)
     {
-        $this->blogPost = new BlogPost();
+        $this->blogPost = $blogPost;
     }
 
     public function index(): string

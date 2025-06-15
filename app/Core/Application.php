@@ -4,15 +4,19 @@ declare(strict_types=1);
 namespace App\Core;
 
 use App\core\db\DatabaseORM;
+use App\Core\DI\Container;
+use Doctrine\ORM\EntityManager;
 
 class Application
 {
     private static Application $instance;
     private Routes $routes;
+    private Container $container;
 
     public function __construct()
     {
         self::$instance = $this;
+        $this->container = Container::getInstance();
         $this->initialize();
     }
 
@@ -23,15 +27,15 @@ class Application
 
     private function initialize(): void
     {
+        // Start session
+        $this->startSession();
+
         // Load environment variables
         $this->loadEnvironment();
 
+        $this->registerEntityManager();
+        
 
-        $this->databaseConnection();
-        
-        // Start session
-        $this->startSession();
-        
         // Initialize routes
         $this->routes = new Routes();
     }
@@ -43,9 +47,21 @@ class Application
 
     }
 
-    private function databaseConnection(): void
+    private function registerEntityManager(): void
     {
-        DatabaseORM::getInstance();
+        $this->container->set(DatabaseORM::class, function (){
+            return new DatabaseORM(
+                $_ENV['DB_NAME'],
+                $_ENV['DB_HOST'],
+                $_ENV['DB_USER'],
+                $_ENV['DB_PASS'],
+                $_ENV['DB_DRIVER'] ?? 'pdo_mysql',
+            );
+        });
+        // Register EntityManager
+        $this->container->set(EntityManager::class, function () {
+            return $this->container->get(DatabaseORM::class)->initialize();
+        });
     }
 
     private function startSession(): void
@@ -60,8 +76,8 @@ class Application
         $this->routes->dispatch();
     }
 
-    public function renderView(string $view, array $params = []): string
+    public function getContainer(): Container
     {
-        return View::render($view, $params);
+        return $this->container;
     }
 } 

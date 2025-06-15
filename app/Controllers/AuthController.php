@@ -6,10 +6,15 @@ namespace App\Controllers;
 use App\core\View;
 use App\Models\User;
 use App\Models\Validators\InputValidator;
-use mysql_xdevapi\Exception;
 
 class AuthController
 {
+    private User $user;
+
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
     public function showRegistrationForm(): string
     {
         return View::render('register');
@@ -26,8 +31,7 @@ class AuthController
         $errors = InputValidator::validateRegistration($_POST);
 
         if (empty($errors)) {
-            $user = new User();
-            if($user->create($_POST)){
+            if($this->user->create($_POST)){
                 $_SESSION['success'] = 'Registration successful! Please login.';
                 header('Location: /signin');
                 exit;
@@ -62,8 +66,7 @@ class AuthController
         $errors = InputValidator::validateLogin($_POST);
 
         if (empty($errors)) {
-            $user = new User();
-            $loggedInUser = $user->login($_POST['email'], $_POST['password']);
+            $loggedInUser = $this->user->login($_POST['email'], $_POST['password']);
 
             if ($loggedInUser) {
                 // Set session variables

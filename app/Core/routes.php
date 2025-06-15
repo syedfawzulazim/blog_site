@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Core;
 
 use App\Controllers\BlogController;
+use App\Core\DI\Container;
 use App\Middleware\AuthMiddleware;
 use Phroute\Phroute\RouteCollector;
 use Phroute\Phroute\Dispatcher;
@@ -15,12 +16,15 @@ class Routes
 {
     private RouteCollector $router;
     private Dispatcher $dispatcher;
+    private Container $container;
 
     public function __construct()
     {
+        $this->container = Application::getInstance()->getContainer();
         $this->router = new RouteCollector();
         $this->registerRoutes();
-        $this->dispatcher = new Dispatcher($this->router->getData());
+        $resolver = new PhrouteHandlerResolver($this->container);
+        $this->dispatcher = new Dispatcher($this->router->getData(), $resolver);
     }
 
     private function registerRoutes(): void
@@ -31,7 +35,7 @@ class Routes
 
         // Public routes
         $this->router->get('/', [HomeController::class, 'index']);
-        
+
         // Auth routes
         $this->router->get('/register', [AuthController::class, 'showRegistrationForm']);
         $this->router->post('/register', [AuthController::class, 'register']);

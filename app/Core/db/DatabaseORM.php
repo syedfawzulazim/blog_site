@@ -9,32 +9,38 @@ use Doctrine\DBAL\Exception\ConnectionException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\ORMSetup;
-use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
 
 class DatabaseORM
 {
     private static ?EntityManager $entityManager = null;
 
-    public static function getInstance(): EntityManager
+    public function __construct(
+        private readonly string $dbname,
+        private readonly string $host,
+        private readonly string $user,
+        private readonly string $password,
+        private readonly string $driver,
+
+    ){
+        $this->initialize();
+    }
+
+    public function initialize(): EntityManager
     {
         if (self::$entityManager === null) {
             try {
-                // Load environment variables
-                $dotenv = Dotenv::createImmutable(dirname(__DIR__, 3));
-                $dotenv->safeLoad();
-
                 $config = ORMSetup::createAttributeMetadataConfiguration(
                     paths: [dirname(__DIR__, 3) . '/app/Models/Entities'],
                     isDevMode: true
                 );
 
                 $dbParams = [
-                    'dbname'   => $_ENV['DB_NAME'],
-                    'user'     => $_ENV['DB_USER'],
-                    'password' => $_ENV['DB_PASS'],
-                    'host'     => $_ENV['DB_HOST'],
-                    'driver'   => $_ENV['DB_DRIVER'] ?? 'pdo_mysql',
+                    'dbname'   => $this->dbname,
+                    'user'     => $this->user,
+                    'password' => $this->password,
+                    'host'     => $this->host,
+                    'driver'   =>$this->driver,
                 ];
 
                 try {

@@ -13,9 +13,9 @@ class BlogPost
 {
     private EntityManager $entityManager;
 
-    public function __construct()
+    public function __construct(EntityManager $entityManager)
     {
-        $this->entityManager = DatabaseORM::getInstance();
+        $this->entityManager = $entityManager;
     }
 
     public function create(array $data, int $userId): bool
@@ -62,7 +62,7 @@ class BlogPost
         }
     }
 
-    public function getPostById(int $id): ?array
+    public function getPostById(string $id): ?array
     {
         try {
             $post = $this->entityManager->getRepository(BlogPostEntity::class)->find($id);
@@ -84,7 +84,7 @@ class BlogPost
         }
     }
 
-    public function update(int $id, array $data): bool
+    public function update(string $id, array $data): bool
     {
         try {
             $post = $this->entityManager->getRepository(BlogPostEntity::class)->find($id);
@@ -103,7 +103,7 @@ class BlogPost
         }
     }
 
-    public function delete(int $id, int $userId): bool|string
+    public function delete(string $id, int $userId): bool|string
     {
         try {
             $post = $this->entityManager->getRepository(BlogPostEntity::class)->find($id);

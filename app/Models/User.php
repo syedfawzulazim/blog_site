@@ -12,14 +12,9 @@ class User
 {
     private EntityManager $entityManager;
 
-    public function __construct()
+    public function __construct(EntityManager $entityManager)
     {
-        try {
-            $this->entityManager = DatabaseORM::getInstance();
-        } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleError($e);
-            throw $e;
-        }
+            $this->entityManager = $entityManager;
     }
 
     public function create(array $data): bool

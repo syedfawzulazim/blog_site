@@ -15,9 +15,9 @@ class BlogController
 
     private BlogPost $blogPost;
 
-    public function __construct()
+    public function __construct(BlogPost $blogPost)
     {
-        $this->blogPost = new BlogPost();
+        $this->blogPost = $blogPost;
     }
 
     public function index(): string
@@ -61,7 +61,7 @@ class BlogController
         }
     }
 
-    public function edit(int $id): string
+    public function edit(string $id): string
     {
         try {
             $post = $this->blogPost->getPostById($id);
@@ -79,7 +79,7 @@ class BlogController
         }
     }
 
-    public function update(int $id): string
+    public function update(string $id): string
     {
         try {
             if ($error = $this->validateMethod('POST', 'blog/update')) {
@@ -117,7 +117,7 @@ class BlogController
         }
     }
 
-    public function delete(int $id): string
+    public function delete(string $id): string
     {
         try {
             $result = $this->blogPost->delete($id, $_SESSION['user_id']);
