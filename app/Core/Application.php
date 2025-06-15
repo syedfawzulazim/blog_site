@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Core;
 
 use App\core\db\DatabaseORM;
-use App\Helpers\CommonHelper;
 
 class Application
 {
@@ -46,7 +45,7 @@ class Application
 
     private function databaseConnection(): void
     {
-        $entityManager = DatabaseORM::create();
+        DatabaseORM::getInstance();
     }
 
     private function startSession(): void
@@ -65,5 +64,4 @@ class Application
     {
         return View::render($view, $params);
     }
-
 } 

@@ -61,12 +61,12 @@ class Routes
     private function handleNotFound(): void
     {
         http_response_code(404);
-        echo Application::getInstance()->renderView('error/404');
+        echo View::render('error/404');
     }
 
     private function handleError(\Exception $e): void
     {   echo $e->getMessage();
         http_response_code(500);
-        echo Application::getInstance()->renderView('error/500');
+        echo View::render('error/500');
     }
 }

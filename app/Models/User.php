@@ -16,7 +16,7 @@ class User
     public function __construct()
     {
         try {
-            $this->entityManager = DatabaseORM::create();
+            $this->entityManager = DatabaseORM::getInstance();
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleError($e);
             throw $e;

@@ -15,7 +15,7 @@ class BlogPost
 
     public function __construct()
     {
-        $this->entityManager = DatabaseORM::create();
+        $this->entityManager = DatabaseORM::getInstance();
     }
 
     public function create(array $data, int $userId): bool

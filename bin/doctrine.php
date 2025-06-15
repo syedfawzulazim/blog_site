@@ -6,7 +6,7 @@ use App\Core\Db\DatabaseORM;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
 
-$entityManager = DatabaseORM::create();
+$entityManager = DatabaseORM::getInstance();
 
 $commands = [
     // If you want to add your own custom console commands,
