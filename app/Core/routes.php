@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Core;
 
 use App\Controllers\BlogController;
+use App\Middleware\AuthMiddleware;
 use Phroute\Phroute\RouteCollector;
 use Phroute\Phroute\Dispatcher;
 use Phroute\Phroute\Exception\HttpRouteNotFoundException;
@@ -24,6 +25,10 @@ class Routes
 
     private function registerRoutes(): void
     {
+        $this->router->filter('auth', function() {
+            return (new AuthMiddleware)->handle();
+        });
+
         // Public routes
         $this->router->get('/', [HomeController::class, 'index']);
         
@@ -33,14 +38,15 @@ class Routes
         $this->router->get('/signin', [AuthController::class, 'showSignInForm']);
         $this->router->post('/signin', [AuthController::class, 'signIn']);
         $this->router->get('/logout', [AuthController::class, 'logout']);
-        
-        // Protected routes
-        $this->router->get('/blog/create', [BlogController::class, 'index']);
-        $this->router->post('/blog/create', [BlogController::class, 'create']);
-        $this->router->get('/blog/edit/{id:\d+}', [BlogController::class, 'edit']);
-        $this->router->post('/blog/edit/{id:\d+}', [BlogController::class, 'update']);
-        $this->router->get('/blog/delete/{id:\d+}', [BlogController::class, 'delete']);
 
+        // Protected routes
+        $this->router->group(['before' => 'auth'], function($router) {
+            $router->get('/blog/create', [BlogController::class, 'index']);
+            $router->post('/blog/create', [BlogController::class, 'create']);
+            $router->get('/blog/edit/{id:\d+}', [BlogController::class, 'edit']);
+            $router->post('/blog/edit/{id:\d+}', [BlogController::class, 'update']);
+            $router->get('/blog/delete/{id:\d+}', [BlogController::class, 'delete']);
+        });
     }
 
     public function dispatch(): void

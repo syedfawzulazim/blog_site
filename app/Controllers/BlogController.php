@@ -8,7 +8,6 @@ use App\Core\Traits\RedirectTrait;
 use App\Core\Traits\ValidateMethodTrait;
 use App\Core\View;
 use App\Models\BlogPost;
-use App\Models\Validators\InputValidator;
 
 class BlogController
 {
@@ -32,10 +31,6 @@ class BlogController
     public function create(): string
     {
         try {
-            if (!isset($_SESSION['user_id'])) {
-                $this->redirect('/signin');
-            }
-
             if ($error = $this->validateMethod('POST', 'blog/create', ['old' => $_POST])) {
                 return $error;
             }
@@ -69,10 +64,6 @@ class BlogController
     public function edit(int $id): string
     {
         try {
-            if (!isset($_SESSION['user_id'])) {
-                $this->redirect('/signin');
-            }
-
             $post = $this->blogPost->getPostById($id);
             if (!$post || $post['user_id'] !== $_SESSION['user_id']) {
                 $this->redirect('/');
@@ -83,6 +74,7 @@ class BlogController
             ]);
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleError($e);
+            $_SESSION['error'] = 'An error occurred while fetching the post';
             $this->redirect('/');
         }
     }
@@ -90,11 +82,7 @@ class BlogController
     public function update(int $id): string
     {
         try {
-            if (!isset($_SESSION['user_id'])) {
-                $this->redirect('/signin');
-            }
-
-            if ($error = $this->validateMethod('POST', 'blog/edit')) {
+            if ($error = $this->validateMethod('POST', 'blog/update')) {
                 return $error;
             }
 
@@ -132,10 +120,6 @@ class BlogController
     public function delete(int $id): string
     {
         try {
-            if (!isset($_SESSION['user_id'])) {
-                $this->redirect('/signin');
-            }
-
             $result = $this->blogPost->delete($id, $_SESSION['user_id']);
             
             if ($result === true) {
