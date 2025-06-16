@@ -5,7 +5,7 @@ namespace App\Core;
 
 class View
 {
-    public static function render(string $view, array $params = []): string
+    public function render(string $view, array $params = []): string
     {
         $viewPath = dirname(__DIR__) . "/Views/{$view}.php";
 

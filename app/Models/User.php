@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Core\Db\DatabaseORM;
 use App\Core\ErrorHandler;
 use App\Models\Entities\User as UserEntity;
 use Doctrine\ORM\EntityManager;

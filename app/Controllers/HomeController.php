@@ -10,10 +10,13 @@ use App\Models\BlogPost;
 class HomeController
 {
     private BlogPost $blogPost;
+    private View $view;
 
-    public function __construct(BlogPost $blogPost)
+    public function __construct(BlogPost $blogPost,  View $view)
     {
         $this->blogPost = $blogPost;
+        $this->view = $view;
+
     }
 
     public function index(): string
@@ -24,12 +27,12 @@ class HomeController
                 $posts = $this->blogPost->getAllPostsByUserId((int)$_SESSION['user_id']);
             }
 
-            return View::render('home', [
+            return $this->view->render('home', [
                 'posts' => $posts
             ]);
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleError($e);
-            return View::render('home', [
+            return $this->view->render('home', [
                 'errors' => ['An error occurred while fetching posts'],
                 'posts' => []
             ]);

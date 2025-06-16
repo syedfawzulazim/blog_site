@@ -10,10 +10,12 @@ use App\Models\Validators\InputValidator;
 class AuthController
 {
     private User $user;
+    private View $view;
 
-    public function __construct(User $user)
+    public function __construct(User $user, View $view)
     {
         $this->user = $user;
+        $this->view = $view;
     }
     public function showRegistrationForm(): string
     {
@@ -36,13 +38,13 @@ class AuthController
                 header('Location: /signin');
                 exit;
             } else {
-                return View::render('register', [
+                return  $this->view->render('register', [
                     'errors' => ['Registration failed'],
                     'old' => $_POST
                 ]);
             }
         } else {
-            return View::render('register', [
+            return  $this->view->render('register', [
                 'errors' => $errors,
                 'old' => $_POST // To repopulate the form
             ]);
@@ -51,14 +53,14 @@ class AuthController
 
     public function showSignInForm(): string
     {
-        return View::render('signin');
+        return  $this->view->render('signin');
     }
 
     public function signin(): string
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
-            return View::render('signin', [
+            return  $this->view->render('signin', [
                 'errors' => ['Method not allowed']
             ]);
         }
@@ -78,14 +80,14 @@ class AuthController
                 header('Location: /');
                 exit;
             } else {
-                return View::render('signin', [
+                return  $this->view->render('signin', [
                     'errors' => ['Invalid email or password'],
                     'old' => $_POST
                 ]);
             }
         }
 
-        return View::render('signin', [
+        return  $this->view->render('signin', [
             'errors' => $errors,
             'old' => $_POST
         ]);

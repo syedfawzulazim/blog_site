@@ -14,10 +14,12 @@ class BlogController
     use RedirectTrait, ValidateMethodTrait;
 
     private BlogPost $blogPost;
+    private View $view;
 
-    public function __construct(BlogPost $blogPost)
+    public function __construct(BlogPost $blogPost,View $view)
     {
         $this->blogPost = $blogPost;
+        $this->view = $view;
     }
 
     public function index(): string
@@ -25,7 +27,7 @@ class BlogController
         if (!isset($_SESSION['user_id'])) {
             $this->redirect('/signin');
         }
-        return View::render('blog/create');
+        return  $this->view->render('blog/create');
     }
 
     public function create(): string
@@ -37,7 +39,7 @@ class BlogController
 
             $errors = $this->validatePost($_POST);
             if (!empty($errors)) {
-                return View::render('blog/create', [
+                return $this->view->render('blog/create', [
                     'errors' => $errors,
                     'old' => $_POST
                 ]);
@@ -48,13 +50,13 @@ class BlogController
                 $this->redirect('/');
             }
 
-            return View::render('blog/create', [
+            return $this->view->render('blog/create', [
                 'errors' => ['Failed to create blog post'],
                 'old' => $_POST
             ]);
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleError($e);
-            return View::render('blog/create', [
+            return $this->view->render('blog/create', [
                 'errors' => ['An error occurred while creating the post'],
                 'old' => $_POST
             ]);
@@ -69,7 +71,7 @@ class BlogController
                 $this->redirect('/');
             }
 
-            return View::render('blog/edit', [
+            return $this->view->render('blog/edit', [
                 'post' => $post
             ]);
         } catch (\Throwable $e) {
@@ -93,7 +95,7 @@ class BlogController
 
             $errors = $this->validatePost($_POST);
             if (!empty($errors)) {
-                return View::render('blog/edit', [
+                return $this->view->render('blog/edit', [
                     'errors' => $errors,
                     'post' => $post
                 ]);
@@ -104,13 +106,13 @@ class BlogController
                 $this->redirect('/');
             }
 
-            return View::render('blog/edit', [
+            return $this->view->render('blog/edit', [
                 'errors' => ['Failed to update blog post'],
                 'post' => $post
             ]);
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleError($e);
-            return View::render('blog/edit', [
+            return $this->view->render('blog/edit', [
                 'errors' => ['An error occurred while updating the post'],
                 'post' => $post ?? null
             ]);
