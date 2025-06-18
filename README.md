@@ -16,24 +16,6 @@ It follows the MVC architectural pattern and implements best practices like depe
 - 📦 Environment variable support using `phpdotenv`
 - 🧪 Ready for PHPUnit testing
 
----
-
-## 🗂️ Project Structure
-├── app/
-│ ├── Core/ # Core system (DI, Routing, DB, ErrorHandler)
-│ ├── Controllers/ # Controllers (AuthController, BlogController, etc.)
-│ ├── Models/ # Application logic and database models
-│ ├── Views/ # HTML/PHP templates
-│ ├── Middleware/ # Custom middleware (e.g., AuthMiddleware, CSRFMiddleware)
-│
-├── bin/ # CLI scripts for Doctrine (migrations, setup)
-├── config/ # Doctrine & environment config files
-├── public/ # Public entry point (index.php)
-├── vendor/ # Composer dependencies
-├── migrations/ # Doctrine migration files
-├── .env # Environment variables
-├── composer.json
-├── README.md
 
 ✨ Available Routes
 
