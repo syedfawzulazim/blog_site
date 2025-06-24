@@ -1,4 +1,4 @@
-# PHP Blog Web Application
+# RAW PHP Blog Web Application(MVC)
 
 A lightweight, object-oriented blog web application built using raw PHP 8.2.  
 It follows the MVC architectural pattern and implements best practices like dependency injection, routing, centralized error handling, Middleware, and database access via Doctrine ORM.
